@@ -110,9 +110,10 @@ def takeorder(order_id):
         order_id=order.order_id,
         status="Out for Delivery")
     order.status = "Out for Delivery"
+    order.deliveryguy = current_user.names
+    order.taken_by = current_user.id
     db.session.add(order)
     db.session.add(new_delivery)
-
     try:
         db.session.commit()
         flash('Order taken successfully.')

@@ -151,6 +151,7 @@ class Order(db.Model):
     pharmacy_id = db.Column(db.Integer, db.ForeignKey('pharmacy.id', name='fk_pharma_order'), nullable=False)
     source_pharmacy = db.Column(db.String(120))
     taken_by = db.Column(db.Integer, db.ForeignKey('deliveryguy.id', name='fk_pharma_order_deliver'))
+    deliveryguy = db.Column(db.String(50), default="Not Taken")
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
     screenshot = db.Column(db.String(120))
