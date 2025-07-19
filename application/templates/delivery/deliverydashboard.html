@@ -36,9 +36,9 @@ s0.parentNode.insertBefore(s1,s0);
             <td>{{ order.status }}</td>
             <td>{{ order.location }}</td>
             <td>
-                          <button class="btn btn-outline-primary rounded-pill" onclick="window.location.href='{{url_for('delivery.takeorder', order_id=order.id)}}'">
+                <button class="btn btn-outline-primary rounded-pill" onclick="window.location.href='{{url_for('delivery.takeorder', order_id=order.id)}}'">
                              Take Order
-                          </button>
+                </button>
             </td>
 
 
