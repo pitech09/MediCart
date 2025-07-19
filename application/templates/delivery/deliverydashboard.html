@@ -1,0 +1,51 @@
+{% extends "deliverylayout.html" %}
+{% block title %}{{pharmacy.name}} Order Details View - MediCart {% endblock %}
+{% block content %}
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/68434ad6706334190d799301/default';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!-- Active Orders -->
+<h1>{{pharmacy.name}} Ready Orders</h1>
+<table border="1">
+
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Status</th>
+            <th>Address</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    {%if not ready_orders%}
+<p>There are no ready orders</p>
+    {%else%}
+        {% for order in ready_orders %}
+        <tr>
+            <td>{{ order.order_id }}</td>
+            <td>{{ order.user_email }}</td>
+            <td>{{ order.status }}</td>
+            <td>{{ order.location }}</td>
+            <td>
+                          <button class="btn btn-outline-primary rounded-pill" onclick="window.location.href='{{url_for('delivery.takeorder', order_id=order.id)}}'">
+                             Take Order
+                          </button>
+            </td>
+
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{%endif%}
+
+{% endblock %}

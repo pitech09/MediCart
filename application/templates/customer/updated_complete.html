@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block title %}Complete Orders - MediCart {% endblock %}
+{% block content %}
+
+
+            <button type="submit" class="btn btn-outline-primary rounded-pill" onclick="window.location.href='{{ url_for('main.myorders')}}'">Active/Pending Orders</button>
+            <button class="btn btn-outline-primary rounded-pill" onclick="window.location.href='{{ url_for('main.completed_order') }}'">Order History</button>
+            <button  class="btn btn-outline-primary rounded-pill" onclick="window.location.href='{{ url_for('main.cancelled_orders') }}'">Cancelled Order</button>
+
+        <!-- Active Orders -->
+        <section class="order-list" id="active-orders">
+            {%if not orders_completed%}
+            <p>There are no Complete orders</p>
+            {%else%}
+            {%for order in orders_completed%}
+            <div class="order-card">
+                <h3>Order ID: {{order.order_id}}</h3>
+
+                <p>Dest: {{order.location}}</p>
+                <p>Order Date:{{order.create_at.strftime('%Y - %m - %d @ %H:%M')}}</p>
+            </div>
+            {%endfor%}
+            {%endif%}
+            <!-- Repeat order-card for more orders -->
+        </section>
+
+{% endblock %}

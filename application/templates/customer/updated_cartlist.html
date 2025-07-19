@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+{% block title %}Cartlist - MediCart {% endblock %}
+{% block content %}
+<div class="containerr">
+
+    {% if not cart.cart_items%}
+    <div class="cart-summary">
+        <p>Cart is Empty</p>
+    {%else%}
+    <div class="cart">
+<h4>Payment Codes</h4>
+        <p>Mpesa Till/Number: {{pharmacy.mpesa_shortcode}}</p>
+        <p>Ecocash Till/Number: {{pharmacy.ecocash_short_code}}</p>
+        <button onclick="window.location.href='{{ url_for('main.redeempoints',cart_id=cart.id)}}'"
+                class="btn btn-outline-primary rounded-pill">Redeem Points on Delivery</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            {%for items in cart.cart_items%}
+            <tbody id="cart-items">
+                        <td>{{items.product.productname}}</td>
+            <td>M{{items.product.price}}</td>
+            <td>{{items.quantity}}</td>
+            <td>
+            <button onclick="window.location.href='{{ url_for('main.remove_from_cart',item_id=items.id)}}'"
+                        class="btn btn-outline-primary rounded-pill"><i class="fas fa-trash"></i></button>
+            </td>
+
+            </tbody>
+
+            {%endfor%}
+        </table>
+    </div>
+
+
+        <div class="cart-summary">
+        <p>Total Price: M<span id="total-price">{{total_amount}}</span> includes Delivery Fees</p>
+        </div>
+    <form action="{{url_for('main.addorder',total_amount=total_amount)}}"  method="POST" enctype="multipart/form-data">
+                {{ form3.hidden_tag() }}
+                <div class="form-group">
+                    {{form3.payment.label}}
+                    {{form3.payment(class='form-control')}}
+                </div>
+                <div class="form-group">
+                    {{form3.payment_number.label}}
+                    {{form3.payment_number(class='form-control')}}
+                </div>
+
+                <div class="form-group">
+                    {{form3.transid.label}}
+                    {{form3.transid(class='form-control')}}
+                </div>
+                <div class="form-group">
+                    {{form3.drop_address.label}}
+                    {{form3.drop_address(class='form-control')}}
+                </div>
+        <div class="form-group">
+                    {{form3.payment_screenshot.label}}
+                    {{form3.payment_screenshot(class='form-control')}}
+                </div>
+
+                    {{form3.latitude()}}
+                    {{form3.logitude()}}
+                    <button type="button" onclick="getLocation()" class="btn btn-light btn-sm">
+                        Use my current location(recommended)
+                    </button>
+    <div class="button-container">
+        <!-- Shop Button -->
+
+<button type="submit" class="btn btn-light btn-sm"
+      onclick="window.location.href='{{ url_for('main.addorder', total_amount=total_amount)}}'">Add Order
+</button>
+
+    </div>
+
+            </form>
+
+    {%endif%}
+            </div>
+</div>
+<script>
+    function getLocation(){
+        navigator.geolocation.getCurrentPosition(function(pos) {
+            document.getElementById('logitude').value = pos.coords.longitude;
+            document.getElementById('latitude').value = pos.coords.latitude;
+            document.getElementById('address').value = 'Lat: $ {pos.coords.latitude}. Lng:${pos.coords.longitude}';
+        });
+    }
+    </script>
+{% endblock %}
