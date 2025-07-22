@@ -201,6 +201,7 @@ class Delivery(db.Model):
     status = db.Column(db.String(50), default='Out for delivery')
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
+    end_time = db.Column(db.DateTime, nullable=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     end_time = db.Column(db.DateTime)
     order_id = db.Column(db.String(30), db.ForeignKey('order.id', name='fk_delivery_order'))
