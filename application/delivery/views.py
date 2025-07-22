@@ -124,8 +124,6 @@ def takeorder(order_id):
     cust_names=user.firstname + " " + user.lastname
     new_delivery = Delivery(customer_name = cust_names,
         address=order.location,
-        latitude=order.latitude,
-        longitude=order.longitude,
         delivery_guy_id=current_user.id,
         order_id=order.order_id,
         status="Out for Delivery")

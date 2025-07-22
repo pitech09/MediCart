@@ -199,8 +199,6 @@ class Delivery(db.Model):
     customer_name = db.Column(db.String(120))
     address = db.Column(db.String(100))
     status = db.Column(db.String(50), default='Out for delivery')
-    latitude = db.Column(db.Float)
-    longitude = db.Column(db.Float)
     end_time = db.Column(db.DateTime, nullable=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     end_time = db.Column(db.DateTime)
