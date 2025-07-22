@@ -238,6 +238,7 @@ def deliverylayout():
     return render_template('deliverylayout.html', formpharm=formpharm, total_count=total_count,
                            pharmacy=pharmacy)
 
+
 @delivery.route('/set_pharmacy', methods=['POST', 'GET'])
 def set_pharmacy():
     formpharm = Set_PharmacyForm()
