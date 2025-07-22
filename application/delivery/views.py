@@ -1,11 +1,11 @@
 import os
-
+from datetime import datetime, timedelta
 from PIL import Image
 from flask import render_template, redirect, url_for, flash, session
 from flask_login import login_required, current_user, logout_user  # type: ignore
-from sqlalchemy import desc
+from sqlalchemy import desc, func
 from sqlalchemy.exc import IntegrityError
-from datetime import datetime, timedelta
+
 from application.utils.notification import create_notification
 from . import delivery
 from ..forms import *
@@ -74,15 +74,13 @@ def dashboard():
     in_progress = [d for d in deliveries if d.status not in ['Delivered', 'Cancelled']]
 
     success_rate = (len(delivered) / total * 100) if total !=0 else 0
-
     today = datetime.utcnow()
     start_of_day = today.replace(hour=0, minute=0, second=0, microsecond=0)
     end_of_day = start_of_day + timedelta(days=1)
     # Daily Statistics
     deliveries_today = db.session.query(Delivery).filter(
         Delivery.end_time >= start_of_day,
-        Delivery.end_time < end_of_day,
-        Delivery.status == "Delivered"
+        Delivery.end_time < end_of_day
     ).all()
     daily_revenue = len(deliveries_today)*10
     print(daily_revenue)
@@ -97,14 +95,14 @@ def dashboard():
     ).all()
 
     weekly_revenue = len(weekly_count)*10
-    # Average delivery time (assumes Delivery model has `start_time` and `end_time` as datetime fields)
-    #total_time = sum([(d.end_time - d.start_time).total_seconds() for d in delivered if d.start_time and d.end_time], 0)
-    #avg_delivery_time = total_time / len(delivered) / 60 if delivered else 0  # in minutes
+    print(weekly_revenue)
 
-    #recent_deliveries = sorted(deliveries, key=lambda d: d.end_time or d.id, reverse=True)[:5]
 
     return render_template('delivery/deliverystats.html',
                            total=total,
+
+                           weekly_revenue=weekly_revenue,
+                           daily_revenue=daily_revenue,
                            delivered=len(delivered),
                            in_progress=len(in_progress),
                            cancelled=len(cancelled),
@@ -118,7 +116,6 @@ def dashboard():
 def takeorder(order_id):
     order = Order.query.filter(Order.id==order_id, Order.pharmacy_id==session.get('pharmacy_id')).first()
     existing_deliveries_count = db.session.query(Delivery).join(Order).filter(Delivery.delivery_guy_id == current_user.id, Order.status == "Out for Delivery").count()
-    
     if existing_deliveries_count >= 5:
         flash('You cannot take more than 5 orders at a time.')
         return redirect(url_for('delivery.dashboard'))
@@ -193,7 +190,6 @@ def ready_orders():
 def update_delivery(delivery_id):
     form = updatedeliveryform()
     delivery = Delivery.query.get_or_404(delivery_id)
-
     if form.validate_on_submit():
         new_status = form.status.data
         old_status = delivery.status
@@ -205,13 +201,16 @@ def update_delivery(delivery_id):
         delivery.status = new_status
         order = Order.query.filter(Order.order_id == delivery.order_id).first()
         order.status = form.status.data
+        delivery.end_time = datetime.utcnow()
         if form.delivery_prove.data:
             image_filename = save_delivery_picture(form.delivery_prove.data)
             delivery.customer_pic = image_filename
+
+        db.session.add(delivery)
+        db.session.add(order)
         try:
-            db.session.add(delivery)
-            db.session.add(order)
             db.session.commit()
+            flash(f" End time{delivery.end_time}, Start time{delivery.timestamp}")
             # 🔔 Message
             message = f"Delivery #{delivery.id} status changed from {old_status} to {new_status}"
 

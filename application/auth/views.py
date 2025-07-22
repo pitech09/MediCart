@@ -138,6 +138,8 @@ def registerpharmacy():
                     else:
                         token = send_email_(form)
                         flash('An email was sent to you email account.', 'success')
+                        if session['user_type'] == 'pharmacy':
+                            return redirect(url_for('admin.admindash'))
                         return redirect(url_for('auth.unconfirmed', token=token))
                 except IntegrityError:
 
