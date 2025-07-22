@@ -80,7 +80,8 @@ def dashboard():
     # Daily Statistics
     deliveries_today = db.session.query(Delivery).filter(
         Delivery.end_time >= start_of_day,
-        Delivery.end_time < end_of_day
+        Delivery.end_time < end_of_day,
+        Delivery.status == "Delivered"
     ).all()
     daily_revenue = len(deliveries_today)*10
     print(daily_revenue)
