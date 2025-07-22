@@ -75,31 +75,36 @@ s0.parentNode.insertBefore(s1,s0);
                          {% if current_user.is_authenticated %}
                       <li class="nav-item">
                           <a href="{{ url_for('main.home') }}" class="btn btn-outline-primary rounded-pill">
-                             <i class="fas fa-home"></i> Home
+                              Home
                           </a>
                       </li>
                       <li class="nav-item">
                             <a href="{{ url_for('main.menu', page_num=1) }}" class="btn btn-outline-primary rounded-pill">
-                            <i class="fas fa-bars"></i> Menu
+                           Menu
                             </a>
                       </li>
                         {% if total_count %}
                       <li class="nav-item">
-                          <a href="{{ url_for('main.cart') }}" class="btn btn-outline-primary rounded-pill"><i class="fas fa-cart-plus"></i> Cart<sup>{{total_count}}</sup></a>
+                          <a href="{{ url_for('main.cart') }}" class="btn btn-outline-primary rounded-pill">
+                               Cart<sup>{{total_count}}</sup></a>
                       </li>
                         {% else %}
                       <li class="nav-item">
-                        <a href="{{ url_for('main.cart') }}" class="btn btn-outline-primary rounded-pill"><i class="fas fa-cart-plus"></i> Cart<sup>0</sup></a>
+                        <a href="{{ url_for('main.cart') }}" class="btn btn-outline-primary rounded-pill">
+                             Cart<sup>0</sup></a>
                       </li>
                         {% endif %}
                       <li class="nav-item">
-                        <a href="{{url_for('main.myorders')}}" class="btn btn-outline-primary rounded-pill"> <i class="fas fa-box-open"></i> Orders</a>
+                        <a href="{{url_for('main.myorders')}}" class="btn btn-outline-primary rounded-pill">
+                            Orders</a>
                         </li>
                       <li class="nav-item">
-                          <a href="{{ url_for('main.account') }}" class="btn btn-outline-primary rounded-pill"><i class="fas fa-user"></i> Profile</a>
+                          <a href="{{ url_for('main.account') }}" class="btn btn-outline-primary rounded-pill">
+                               Profile</a>
                       </li>
                       <li class="nav-item">
-                          <a href="{{ url_for('main.logout') }}" class="btn btn-outline-primary rounded-pill"> <i class="fas fa-sign-out-alt"></i> Logout</a>
+                          <a href="{{ url_for('main.logout') }}" class="btn btn-outline-primary rounded-pill">
+                               Logout</a>
                       </li>
                       {% if formpharm is defined %}
                       <li class="nav-item">
@@ -110,7 +115,7 @@ s0.parentNode.insertBefore(s1,s0);
                                   {{formpharm.pharmacy(class='form-control bg-light border-0 small')}}
                                   <div class="input-group-append">
                                     <button class="btn btn-primary" type="submit">
-                                      <i class="fa fa-search"></i>
+                                      Select
                                     </button>
                                   </div>
                                 </div>
@@ -120,13 +125,14 @@ s0.parentNode.insertBefore(s1,s0);
                         {% endif %}
                         {% else %}
                       <li class="nav-item">
-                          <a href="{{url_for('auth.newlogin')}}" class="btn btn-outline-primary rounded-pill"><i class="fas fa-sign-in-alt"></i> Login</a>
+                          <a href="{{url_for('auth.newlogin')}}" class="btn btn-outline-primary rounded-pill">
+                             Login</a>
                       </li>
                       <li class="nav-item">
-                          <a href="{{url_for('auth.register', Options=1)}}" class="btn btn-outline-primary rounded-pill"><i class="fas fa-user-plus"></i> Register</a>
+                          <a href="{{url_for('auth.register', Options=1)}}" class="btn btn-outline-primary rounded-pill">Register</a>
                       </li>
                       <li class="nav-item">
-                          <a href="{{url_for('auth.registerpharmacy')}}" class="btn btn-outline-primary rounded-pill"><i class="fas fa-building"></i> Store Register</a>
+                          <a href="{{url_for('auth.registerpharmacy')}}" class="btn btn-outline-primary rounded-pill"> Register Store</a>
                       </li>
                             {% endif %}
                   </ul>
@@ -159,6 +165,6 @@ s0.parentNode.insertBefore(s1,s0);
 
     <script src="{{url_for('static', filename='lib/jquery/dist/jquery.min.js')}}"></script>
     <script src="{{url_for('static', filename='lib/bootstrap/dist/js/bootstrap.bundle.min.js')}}"></script>
-    <script src="{{url_for('static', filename='js/site.js')}}"></script>
+
 </body>
 </html>

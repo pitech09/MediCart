@@ -146,7 +146,6 @@ def cancelled_orders():
     return render_template('customer/updated_cancelled.html', order=order,pharmacy=pharmacy, formpharm=formpharm, user=user)
  
 @main.route('/home', methods=["POST", "GET"])
-@login_required
 def home():
     formpharm = Set_PharmacyForm()
     pharmacies = Pharmacy.query.all()
@@ -372,7 +371,6 @@ def addorder(total_amount):
 
 
 @main.route("/menu/<int:page_num>", methods=["POST", "GET"])
-@login_required
 def menu(page_num=1):
     formpharm = Set_PharmacyForm()
     formpharm.pharmacy.choices=[(-1, "Select a Pharmacy")] + [(p.id, p.name) for p in Pharmacy.query.all()]    
@@ -401,7 +399,6 @@ def menu(page_num=1):
 
 
 @main.route('/add_to_cart/<int:item_id>', methods=['POST','GET'])
-@login_required
 def add_to_cart(item_id):
     form = CartlistForm()
     userid = current_user.id

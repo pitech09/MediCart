@@ -19,7 +19,8 @@
   .dropbtn {
     background-color: #4CAF50;
     color: white;
-    padding: 10px;
+    padding
+    : 10px;
     border: none;
     cursor: pointer;
   }
@@ -58,16 +59,17 @@
                     <ul class="navbar-nav flex-grow-1">
                     {%if current_user.is_authenticated %}
                         <li class ="nav-item" >
-                            <a href = "{{ url_for('delivery.dashboard', page_num=1) }}" class ="btn btn-outline-primary rounded-pill" ><i class="fas fa-tachometer-alt"></i> Dash </a>
+                            <a href = "{{ url_for('delivery.dashboard', page_num=1) }}" class ="btn btn-outline-primary rounded-pill" >
+                               Dashboard</a>
                         </li>
                         <li class ="nav-item" >
-                            <a href = "{{ url_for('delivery.mydeliveries') }}" class ="btn btn-outline-primary rounded-pill" > <i class="fas fa-truck"></i> Deliveries </a>
+                            <a href = "{{ url_for('delivery.mydeliveries') }}" class ="btn btn-outline-primary rounded-pill" >Deliveries </a>
                         </li>
                         <li class ="nav-item" >
-                            <a href = "{{ url_for('delivery.ready_orders') }}" class ="btn btn-outline-primary rounded-pill"><i class="fas fa-tasks"></i> Orders <sup> {{total_count}} </sup> </a>
+                            <a href = "{{ url_for('delivery.ready_orders') }}" class ="btn btn-outline-primary rounded-pill"> Orders <sup> {{total_count}} </sup> </a>
                         </li >
                         <li class ="nav-item" >
-                            <a href = "{{ url_for('main.logout') }}" class ="btn btn-outline-primary rounded-pill"><i class="fas fa-sign-out-alt"></i> Logout </a>
+                            <a href = "{{ url_for('main.logout') }}" class ="btn btn-outline-primary rounded-pill"> Logout </a>
                         </li>
                         <li class ="nav-item">
                             <div class ="dropdown" >
@@ -78,7 +80,7 @@
                                     {{formpharm.pharmacy(class ='form-control bg-light border-0 small')}}
                                         <div class ="input-group-append">
                                             <button class ="btn btn-primary" type="submit">
-                                                <i class ="fa fa-check" > </i>
+                                                Select
                                             </button>
                                         </div>
                                     </div>

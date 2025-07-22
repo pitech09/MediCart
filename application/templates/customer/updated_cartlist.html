@@ -11,7 +11,7 @@
 <h4>Payment Codes</h4>
         <p>Mpesa Till/Number: {{pharmacy.mpesa_shortcode}}</p>
         <p>Ecocash Till/Number: {{pharmacy.ecocash_short_code}}</p>
-        <button onclick="window.location.href='{{ url_for('main.redeempoints',cart_id=cart.id)}}'"
+        <button onclick="window.location.href='{{ url_for('main.redeempoints', cart_id=cart.id)}}'"
                 class="btn btn-outline-primary rounded-pill">Redeem Points on Delivery</button>
         <table>
             <thead>
