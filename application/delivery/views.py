@@ -1,11 +1,11 @@
 import os
-from datetime import datetime, timedelta
+
 from PIL import Image
 from flask import render_template, redirect, url_for, flash, session
 from flask_login import login_required, current_user, logout_user  # type: ignore
 from sqlalchemy import desc
 from sqlalchemy.exc import IntegrityError
-
+from datetime import datetime, timedelta
 from application.utils.notification import create_notification
 from . import delivery
 from ..forms import *
@@ -16,7 +16,7 @@ from ..models import *
 def load_user(user_id):
     user_type = session.get('user_type')
     if user_type == 'pharmacy':
-        if Pharmacy.query.get (int(user_id)):
+        if Pharmacy.query.get(int(user_id)):
             return Pharmacy.query.get(int(user_id))
         else:
             return Staff.query.get(int(user_id))
@@ -75,8 +75,6 @@ def dashboard():
 
     success_rate = (len(delivered) / total * 100) if total !=0 else 0
 
-
-
     today = datetime.utcnow()
     start_of_day = today.replace(hour=0, minute=0, second=0, microsecond=0)
     end_of_day = start_of_day + timedelta(days=1)
@@ -97,7 +95,13 @@ def dashboard():
         Delivery.end_time < end_of_week,
         Delivery.status == "Delivered"
     ).all()
+
     weekly_revenue = len(weekly_count)*10
+    # Average delivery time (assumes Delivery model has `start_time` and `end_time` as datetime fields)
+    #total_time = sum([(d.end_time - d.start_time).total_seconds() for d in delivered if d.start_time and d.end_time], 0)
+    #avg_delivery_time = total_time / len(delivered) / 60 if delivered else 0  # in minutes
+
+    #recent_deliveries = sorted(deliveries, key=lambda d: d.end_time or d.id, reverse=True)[:5]
 
     return render_template('delivery/deliverystats.html',
                            total=total,
@@ -106,8 +110,6 @@ def dashboard():
                            cancelled=len(cancelled),
                            pharmacy=pharmacy,
                            revenue=revenue,
-                           daily_revenue=daily_revenue,
-                           weekly_revenue=weekly_revenue,
                            formpharm=formpharm,
                            success_rate=round(success_rate, 2),
                           )
@@ -201,22 +203,26 @@ def update_delivery(delivery_id):
             return redirect(url_for('delivery.mydeliveries'))
 
         delivery.status = new_status
-        delivery.end_time = datetime.utcnow()
         order = Order.query.filter(Order.order_id == delivery.order_id).first()
         order.status = form.status.data
         if form.delivery_prove.data:
             image_filename = save_delivery_picture(form.delivery_prove.data)
             delivery.customer_pic = image_filename
-        db.session.add(delivery)
-        db.session.add(order)
         try:
+            db.session.add(delivery)
+            db.session.add(order)
             db.session.commit()
             # 🔔 Message
             message = f"Delivery #{delivery.id} status changed from {old_status} to {new_status}"
+
             create_notification(user_type='customer', user_id=order.user_id, message=message)
+
             # 🔔 Notify pharmacy & emit event
+
             create_notification(user_type='pharmacy', user_id=order.pharmacy_id, message=message)
+
             flash('Delivery status successfully updated.')
+
         except IntegrityError:
             db.session.rollback()
             flash('An error occurred while updating the delivery. Please try again.')
@@ -237,7 +243,6 @@ def deliverylayout():
     formpharm.pharmacy.choices = [(p.id, p.name) for p in pharmacies]
     return render_template('deliverylayout.html', formpharm=formpharm, total_count=total_count,
                            pharmacy=pharmacy)
-
 
 @delivery.route('/set_pharmacy', methods=['POST', 'GET'])
 def set_pharmacy():
