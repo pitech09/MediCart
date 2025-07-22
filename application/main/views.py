@@ -187,7 +187,7 @@ def cart():
 
     if cart:
         if cart.redeemed:
-            total_amount = sum(item.product.price * item.quantity for item in cart.cart_items) - 13
+            total_amount = sum(item.product.price * item.quantity for item in cart.cart_items) - 10
         else:
             total_amount = sum(item.product.price * item.quantity for item in cart.cart_items)
 
@@ -202,25 +202,22 @@ def redeempoints(cart_id):
     if cart.redeemed == True:
         flash('You can not redeem points on this cart again.')
         return redirect(url_for('main.cart'))
+
     user = User.query.get_or_404(cart.user_id)
     total_amount = sum(item.product.price * item.quantity for item in cart.cart_items)
-    if total_amount > 50:
-        if user.loyalty_points >= 150:
-            var = user.loyalty_points - 150
-            user.loyalty_points = var
-            cart.redeemed = True
-            total_amount= total_amount - 13
-            db.session.add(user)
-            db.session.add(cart)
-            db.session.commit()
-            flash('Redeemed Points for Delivery')
-            return redirect(url_for('main.cart'))
-        else:
-            flash(f'You do not qualify for point redemption yet. {150 - user.loyalty_points } points remaining. Keep Ordering.')
-            return redirect(url_for('main.cart'))
+    if user.loyalty_points >= 300:
+        var = user.loyalty_points - 300
+        user.loyalty_points = var
+        cart.redeemed = True
+        flash(f'You spend 300 points on delivery, You new amount payable, M{total_amount - 13}')
+        db.session.add(user)
+        db.session.add(cart)
+        db.session.commit()
+        flash('Redeemed Points for Delivery')
+        return redirect(url_for('main.cart'))
     else:
-        flash(f'Order amount is less than M50.00. Increase your current order amount by M{50 - total_amount} to qualify ')
-    return redirect(url_for('main.cart'))
+        flash(f'You do not qualify for point redemption yet. {300 - user.loyalty_points } points remaining. Keep Ordering.')
+        return redirect(url_for('main.cart'))
 
 @main.route('/about', methods=['POST', 'GET'])
 def about():
@@ -338,10 +335,7 @@ def addorder(total_amount):
             print("integrity")
             return redirect(url_for('main.cart'))
         db.session.commit()
-
         total_amount = 0
-
-
         for item in cart.cart_items:
             order_item = OrderItem(order_id=neworder.id, product_id=item.product.id, product_name=item.product.productname,
                                    product_price=item.product.price, quantity=item.quantity)
@@ -349,7 +343,6 @@ def addorder(total_amount):
             total_amount += item.product.price*item.quantity
             db.session.add(order_item)
             db.session.commit()
-
         for i in cart.cart_items:
             sale = Sales(order_id=neworder.id, product_id=i.product.id, product_name=i.product.productname,
             price=i.product.price, quantity=i.quantity, user_id=neworder.user_id, date_=neworder.create_at)
@@ -362,15 +355,16 @@ def addorder(total_amount):
                 else:
                     product.quantity -= i.quantity
                     if product.quantity > 10:
-                        product.warning == "Quantity Good"
+                        product.warning = 'Quantity Good'
                     else:
-                        product.warning == "Low on Stock"
+                        product.warning = "Low on Stock"
                     db.session.add(product)
             db.session.add(sale)
         points_earned = calculate_loyalty_points(user, total_amount)
         print(points_earned)
         flash("Purchase successful, you earned {} points.".format(points_earned) )
         CartItem.query.filter_by(cart_id=cart.id).delete()
+        cart.redeemed = False
         db.session.commit()
 
     return redirect(url_for('main.myorders', total_amount=total_amount))
@@ -388,9 +382,7 @@ def menu(page_num=1):
     start = (page_num - 1) * PRODUCTS_PER_PAGE
     end = start + PRODUCTS_PER_PAGE
     current_products = products[start:end]
-
     total_pages = (len(products) // PRODUCTS_PER_PAGE) + (1 if len(products) % PRODUCTS_PER_PAGE > 0 else 0)
-
     user_id = current_user.id
     user = User.query.get_or_404(user_id)
     item_picture = 'dfdfdf.jpg'
