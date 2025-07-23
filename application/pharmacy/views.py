@@ -7,6 +7,7 @@ import plotly.offline as plot
 from PIL import Image
 from flask import current_app
 from flask import render_template, redirect, url_for, session, request, flash
+from flask_bcrypt import Bcrypt
 from flask_login import login_required, current_user, logout_user, LoginManager  # type: ignore
 from sqlalchemy import func, extract
 from sqlalchemy.exc import IntegrityError
@@ -21,6 +22,9 @@ from ..utils.notification import create_notification
 
 mypharmacy_product = Pharmacy.products
 mypharmacy_orders = Pharmacy.orders
+bcrypt = Bcrypt()
+
+
 
 def save_product_picture(file):
     # Set the desired size for resizing
@@ -450,8 +454,10 @@ def addproducts():
                 product.pharmacy_id = mypharmacy.id
                 _image = save_product_picture(file)
                 product.pictures = _image
+
                 db.session.add(product)
                 try:
+
                     db.session.commit()
                     print('picture saved')
 
