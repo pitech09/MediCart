@@ -23,9 +23,13 @@ class DevelopmentConfig(Config):
     #MAIL_USE_SSL=True
     MAIL_USERNAME = 'pitechcorp7@gmail.com'
     MAIL_PASSWORD = 'rljm azij wply ihrp'
-    UPLOAD_PATH = 'static/css/images/profiles/'
-    UPLOAD_PRODUCTS = 'static/css/images/products/'
-    UPLOAD_DELIVERY = 'static/css/images/delivery/'
+    UPLOAD_PATH = os.path.join(basedir, 'static/css/images/profiles')
+    UPLOAD_PRODUCTS = os.path.join(basedir, 'static/css/images/products')
+
+    UPLOAD_DELIVERY = os.path.join(basedir, 'static/css/images/deliveries')
+    os.makedirs(UPLOAD_PRODUCTS, exist_ok=True)
+    os.makedirs(UPLOAD_PATH, exist_ok=True)
+    os.makedirs(UPLOAD_DELIVERY, exist_ok=True)
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
                               'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite.db')
 
